@@ -29,6 +29,7 @@ router.post(
 //read
 router.get("/car/:carId", getCar);
 router.get("/cars", getAllCar);
+router.get("/car/photo/:carId", photo)
 
 //update
 router.put(
