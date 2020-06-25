@@ -5,9 +5,10 @@ const {
     getCarById,
   createCar,
   getCar,
-  getAllCar,
+  photo,
+  getAllCars,
   updateCar,
-  removeCar
+  deleteCar
 } = require("../controllers/car");
 const { isSignedIn, isLender, isAuthenticated } = require("../controllers/auth");
 const { getUserById } = require("../controllers/user");
@@ -27,9 +28,9 @@ router.post(
 );
 
 //read
-router.get("/car/:carId", getCar);
-router.get("/cars", getAllCar);
-router.get("/car/photo/:carId", photo)
+ router.get("/car/:carId", getCar);
+ router.get("/car/photo/:carId", photo);
+ router.get("/cars", getAllCars);
 
 //update
 router.put(
@@ -47,7 +48,7 @@ router.delete(
   isSignedIn,
   isAuthenticated,
   isLender,
-  removeCar
+  deleteCar
 );
 
 
