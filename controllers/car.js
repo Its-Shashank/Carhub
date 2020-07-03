@@ -3,7 +3,7 @@ const formidable = require("formidable");
 const _ = require("lodash");
 const fs = require("fs");
 
-
+// individual car
 exports.getCarById = (req, res, next, id) => {
     Car.findById(id).exec((err, car) => {
       if (err) {
@@ -16,6 +16,7 @@ exports.getCarById = (req, res, next, id) => {
     });
   };
 
+// create new car
 exports.createCar = (req, res) => {
   let form = new formidable.IncomingForm();
   form.keepExtensions = true;
@@ -43,9 +44,8 @@ exports.createCar = (req, res) => {
 
     car.save((err, car) => {
       if(err){
-        res.status(400).json({
-          error:"unable to save",
-          err
+        return res.status(400).json({
+          error:"unable to save"
         })
       }
       res.json(car)
@@ -53,94 +53,92 @@ exports.createCar = (req, res) => {
   })
 }
 
+// car without photo
 exports.getCar = (req, res) => {
-  req.car.photo = undefined;
-  return res.json(req.car);
-};
+  req.car.photo = undefined
+  return res.json(req.car)
+}
 
-//middleware
+// middleware
 exports.photo = (req, res, next) => {
   if (req.car.photo.data) {
-    res.set("Content-Type", req.car.photo.contentType);
-    return res.send(req.car.photo.data);
+    res.set("Content-Type", req.car.photo.contentType)
+    return res.send(req.car.photo.data)
   }
-  next();
-};
+  next()
+}
 
-
-// delete controllers
-exports.deleteCar = (req, res) => {
-  let car = req.car;
-  car.remove((err, deletedCar) => {
-    if (err) {
-      return res.status(400).json({
-        error: "Failed to delete the car"
-      });
-    }
-    res.json({
-      message: "Deletion was a success",
-      deletedCar
-    });
-  });
-};
-
-// update controllers
-exports.updateCar = (req, res) => {
-  let form = new formidable.IncomingForm();
-  form.keepExtensions = true;
-
-  form.parse(req, (err, fields, file) => {
-    if (err) {
-      return res.status(400).json({
-        error: "problem with image"
-      });
-    }
-
-    //updation code
-    let car = req.car;
-    car = _.extend(car, fields);
-
-    //handle file here
-    if (file.photo) {
-      if (file.photo.size > 3000000) {
-        return res.status(400).json({
-          error: "File size too big!"
-        });
-      }
-      car.photo.data = fs.readFileSync(file.photo.path);
-      car.photo.contentType = file.photo.type;
-    }
-    // console.log(product);
-
-    //save to the DB
-    car.save((err, car) => {
-      if (err) {
-        res.status(400).json({
-          error: "Updation of product failed"
-        });
-      }
-      res.json(car);
-    });
-  });
-};
-
-//event listing
-
-exports.getAllCars = (req, res) => {
-  let sortBy = req.query.sortBy ? req.query.sortBy : "_id";
+exports.getAllCar = (req,res) => {
+  let sortBy = req.query.sortBy ? req.query.sortBy: "_id"
 
   Car.find()
     .select("-photo")
     .populate("category")
     .populate("user")
     .populate("city")
-    .sort([[sortBy, "asc"]])
+    .sortBy([[sortBy, "asc"]])
     .exec((err, cars) => {
       if (err) {
-        return res.status(400).json({
-          error: "NO car FOUND"
-        });
+        return res.status(404).json({
+          error: "No car found",
+          err
+        })
       }
-      res.json(cars);
-    });
-};
+      res.json(cars)
+    })
+}
+
+// update controller
+exports.updateCar = (req, res) => {
+  let form = new formidable.IncomingForm()
+  form.keepExtensions = true
+    form.parse(req, (err, fields, file) => {
+      if (err) {
+        return res.status(400).json({
+          error: 'Problem with image',
+          err
+        })
+      }
+
+      // update code
+      let car = req.car
+      car = _.extend(car, fields)
+
+      // handle file
+      if (file.photo) {
+        if (file.photo.size > 3000000) {
+          return res.status(400).json({
+            error: 'File size too big!'
+          })
+        }
+        car.photo.data = fs.readFileSync(file.photo.path)
+        car.photo.contentType = file.photo.type
+      }
+
+      car.save((err, car) => {
+        if (err) {
+          res.status(400).json({
+            error: 'Updation of product failed',
+            err
+          })
+        }
+        res.json(car)
+      })
+    }) 
+  }
+
+// delete controller
+exports.removeCar = (req, res) => {
+    let car = req.car;
+    car.remove((err, deletedCar) => {
+        if(err){
+            return res.status(400).json({
+                error:"Failed to delete the car"
+            })
+        }
+        res.json({
+          message:"Car Deleted",
+          deletedCar
+        })
+    })
+}

@@ -24,11 +24,7 @@ var userSchema = new mongoose.Schema(
     salt: String,
     role: {
       type: Number,
-      default: 1
-    },
-    car:{
-      type:ObjectId,
-      ref:"Car"
+      default: 0
     },
     order: {
       type: ObjectId,

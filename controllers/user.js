@@ -1,8 +1,4 @@
 const User = require("../models/user");
-const formidable = require("formidable");
-const _ = require("lodash");
-const fs = require("fs");
-
 
 exports.getUserById = (req, res, next, id) => {
   User.findById(id).exec((err, user) => {
@@ -23,41 +19,21 @@ exports.getUser = (req, res) => {
 };
 
 exports.updateUser = (req, res) => {
-  // User.findByIdAndUpdate(
-  //   { _id: req.profile._id },
-  //   { $set: req.body },
-  //   { new: true, useFindAndModify: false },
-  //   (err, user) => {
-  //     if (err) {
-  //       return res.status(400).json({
-  //         error: "You are not authorized to update this user"
-  //       });
-  //     }
-  //     user.salt = undefined;
-  //     user.encry_password = undefined;
-  //     res.json(user);
-  //   }
-  // );
-
-  let form = new formidable.IncomingForm();
-  form.keepExtensions = true;
-
-  form.parse(req, (err, fields) => {
-    let user = req.profile;
-    user = _.extend(user, fields)
-
-    user.save((err, user) => {
-      if(err){
-        res.status(400).json({
-          error:"updation failed"
-        })
+  User.findByIdAndUpdate(
+    { _id: req.profile._id },
+    { $set: req.body },
+    { new: true, useFindAndModify: false },
+    (err, user) => {
+      if (err) {
+        return res.status(400).json({
+          error: "You are not authorized to update this user"
+        });
       }
       user.salt = undefined;
       user.encry_password = undefined;
-      res.json(user)
-    })
-
-  })
+      res.json(user);
+    }
+  );
 };
 
 exports.getAllUserNames = (req,res) => {
