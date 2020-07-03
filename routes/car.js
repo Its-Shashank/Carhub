@@ -7,7 +7,8 @@ const {
   getCar,
   getAllCar,
   updateCar,
-  removeCar
+  removeCar,
+  photo
 } = require("../controllers/car");
 const { isLender, isAuthenticated } = require("../controllers/auth");
 const { getUserById } = require("../controllers/user");
