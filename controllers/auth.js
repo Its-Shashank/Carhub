@@ -80,10 +80,10 @@ exports.signout = (req, res) => {
 };
 
 //protected routes
-exports.isSignedIn = expressJwt({
-  secret: process.env.SECRET,
-  userProperty: "auth"
-});
+// exports.isSignedIn = expressJwt({
+//   secret: process.env.SECRET,
+//   userProperty: "auth"
+// });
 
 //custom middlewares
 exports.isAuthenticated = (req, res, next) => {

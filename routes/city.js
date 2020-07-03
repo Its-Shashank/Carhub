@@ -8,7 +8,7 @@ const {
   getAllCity,
   removeCity
 } = require("../controllers/city");
-const { isSignedIn, isLender, isAuthenticated } = require("../controllers/auth");
+const { isLender, isAuthenticated } = require("../controllers/auth");
 const { getUserById } = require("../controllers/user");
 
 //params
@@ -20,7 +20,6 @@ router.param("cityId", getCityById);
 //create
 router.post(
   "/city/create/:userId",
-  isSignedIn,
   isAuthenticated,
   isLender,
   createCity
@@ -36,7 +35,6 @@ router.get("/cities", getAllCity);
 
 router.delete(
   "/city/:cityId/:userId",
-  isSignedIn,
   isAuthenticated,
   isLender,
   removeCity
